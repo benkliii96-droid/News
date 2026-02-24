@@ -1,0 +1,13 @@
+{% extends 'default.html' %}
+{% load custom_filters %}
+
+{% block title %}
+New
+{% endblock title %}
+
+
+{% block content %}
+<h1>{{ new.title|censor}}</h1>
+    <h2>Дата публикации: {{ new.date|date:'d M Y' }}</h2>
+    <p>{{ new.content|censor }}</p>
+{% endblock content %}

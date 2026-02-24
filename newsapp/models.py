@@ -37,6 +37,7 @@ class Post(models.Model):
     content = models.TextField()
     postRating = models.SmallIntegerField(default=0)
 
+
     def like(self):
         self.postRating += 1
         self.save()
