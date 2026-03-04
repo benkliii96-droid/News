@@ -1,0 +1,36 @@
+{% extends 'default.html' %}
+{% load custom_filters %}
+
+{% block title %}
+    {% if title %}
+        {{ title }}
+    {% else %}
+        Удаление поста
+    {% endif %}
+{% endblock title %}
+
+{% block content %}
+    <h1>
+        {% if title %}
+            {{ title }}
+        {% else %}
+            Удаление поста
+        {% endif %}
+    </h1>
+    <hr>
+
+    <div class="alert alert-danger">
+        <h3>Вы уверены, что хотите удалить этот пост?</h3>
+
+        <h2>{{ object.title|censor }}</h2>
+        <p><strong>Дата публикации:</strong> {{ object.date|date:'d M Y H:i' }}</p>
+        <p><strong>Автор:</strong> {{ object.author.user.username }}</p>
+        <p><strong>Содержание:</strong> {{ object.content|censor|truncatechars:200 }}</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" value="Да, удалить" class="btn btn-danger"/>
+        <a href="javascript:history.back()" class="btn btn-secondary">Отмена</a>
+    </form>
+{% endblock content %}

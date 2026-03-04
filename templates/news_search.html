@@ -1,16 +1,18 @@
 {% extends 'default.html' %}
 {% load custom_filters %}
 {% load custom_tags %}
-{% block title %}Новости{% endblock title %}
+{% block title %}Поиск новостей{% endblock title %}
 {% block content %}
-    <h1>Все новости</h1>
+    <h1>Поиск новостей</h1>
     <div class="mb-3">
-        <a href="{% url 'news_create' %}" class="btn btn-primary">Добавить новость</a>
-        <a href="{% url 'news_search' %}" class="btn btn-info">Поиск</a>
-        <a href="{% url 'articles_list' %}" class="btn btn-secondary">Статьи</a>
+        <a href="{% url 'news_list' %}" class="btn btn-secondary">Назад к списку</a>
     </div>
-    <h2>Количество новостей: {{ news|length }}</h2>
+    <form action="" method="get">
+        {{ filterset.form.as_p }}
+        <input type="submit" value="Поиск" class="btn btn-primary"/>
+    </form>
     <hr>
+    <h2>Найдено новостей: {{ news|length }}</h2>
     <table class="table">
         <tr>
             <th>Название</th>
@@ -27,13 +29,13 @@
                 <td>{{ new.content|censor|truncatechars:50 }}</td>
                 <td>
                     <a href="{% url 'new_detail' new.pk %}" class="btn btn-sm btn-info">Просмотр</a>
-                    <a href="{% url 'news_edit' new.pk %}" class="btn btn-sm btn-warning">Редактировать</a>
-                    <a href="{% url 'news_delete' new.pk %}" class="btn btn-sm btn-danger">Удалить</a>
+                    <a href="{% url 'news_edit' new.pk %}" class="btn btn-sm btn-warning">Ред.</a>
+                    <a href="{% url 'news_delete' new.pk %}" class="btn btn-sm btn-danger">Удал.</a>
                 </td>
             </tr>
         {% empty %}
             <tr>
-                <td colspan="5">Новостей пока нет.</td>
+                <td colspan="5">Ничего не найдено.</td>
             </tr>
         {% endfor %}
     </table>

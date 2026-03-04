@@ -1,15 +1,15 @@
 {% extends 'default.html' %}
 {% load custom_filters %}
 {% load custom_tags %}
-{% block title %}Новости{% endblock title %}
+{% block title %}Статьи{% endblock title %}
 {% block content %}
-    <h1>Все новости</h1>
+    <h1>Все статьи</h1>
     <div class="mb-3">
-        <a href="{% url 'news_create' %}" class="btn btn-primary">Добавить новость</a>
-        <a href="{% url 'news_search' %}" class="btn btn-info">Поиск</a>
-        <a href="{% url 'articles_list' %}" class="btn btn-secondary">Статьи</a>
+        <a href="{% url 'article_create' %}" class="btn btn-primary">Добавить статью</a>
+        <a href="{% url 'article_search' %}" class="btn btn-info">Поиск</a>
+        <a href="{% url 'news_list' %}" class="btn btn-secondary">Новости</a>
     </div>
-    <h2>Количество новостей: {{ news|length }}</h2>
+    <h2>Количество статей: {{ articles|length }}</h2>
     <hr>
     <table class="table">
         <tr>
@@ -19,21 +19,21 @@
             <th>Описание</th>
             <th>Действия</th>
         </tr>
-        {% for new in news %}
+        {% for article in articles %}
             <tr>
-                <td>{{ new.title|censor }}</td>
-                <td>{{ new.date|date:'d M Y' }}</td>
-                <td>{{ new.author.user.username }}</td>
-                <td>{{ new.content|censor|truncatechars:50 }}</td>
+                <td>{{ article.title|censor }}</td>
+                <td>{{ article.date|date:'d M Y' }}</td>
+                <td>{{ article.author.user.username }}</td>
+                <td>{{ article.content|censor|truncatechars:50 }}</td>
                 <td>
-                    <a href="{% url 'new_detail' new.pk %}" class="btn btn-sm btn-info">Просмотр</a>
-                    <a href="{% url 'news_edit' new.pk %}" class="btn btn-sm btn-warning">Редактировать</a>
-                    <a href="{% url 'news_delete' new.pk %}" class="btn btn-sm btn-danger">Удалить</a>
+                    <a href="{% url 'article_detail' article.pk %}" class="btn btn-sm btn-info">Просмотр</a>
+                    <a href="{% url 'article_edit' article.pk %}" class="btn btn-sm btn-warning">Редактировать</a>
+                    <a href="{% url 'article_delete' article.pk %}" class="btn btn-sm btn-danger">Удалить</a>
                 </td>
             </tr>
         {% empty %}
             <tr>
-                <td colspan="5">Новостей пока нет.</td>
+                <td colspan="5">Статей пока нет.</td>
             </tr>
         {% endfor %}
     </table>

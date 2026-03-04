@@ -2,12 +2,19 @@
 {% load custom_filters %}
 
 {% block title %}
-New
+    {{ new.title|censor }}
 {% endblock title %}
 
-
 {% block content %}
-<h1>{{ new.title|censor}}</h1>
-    <h2>Дата публикации: {{ new.date|date:'d M Y' }}</h2>
+    <h1>{{ new.title|censor }}</h1>
+    <p><strong>Автор:</strong> {{ new.author.user.username }}</p>
+    <p><strong>Дата публикации:</strong> {{ new.date|date:'d M Y H:i' }}</p>
+    <hr>
     <p>{{ new.content|censor }}</p>
+
+    <div class="mt-3">
+        <a href="{% url 'news_edit' new.pk %}" class="btn btn-warning">Редактировать</a>
+        <a href="{% url 'news_delete' new.pk %}" class="btn btn-danger">Удалить</a>
+        <a href="{% url 'news_list' %}" class="btn btn-secondary">Назад к списку</a>
+    </div>
 {% endblock content %}

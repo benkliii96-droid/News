@@ -1,0 +1,20 @@
+{% extends 'default.html' %}
+{% load custom_filters %}
+
+{% block title %}
+    {{ article.title|censor }}
+{% endblock title %}
+
+{% block content %}
+    <h1>{{ article.title|censor }}</h1>
+    <p><strong>Автор:</strong> {{ article.author.user.username }}</p>
+    <p><strong>Дата публикации:</strong> {{ article.date|date:'d M Y H:i' }}</p>
+    <hr>
+    <p>{{ article.content|censor }}</p>
+
+    <div class="mt-3">
+        <a href="{% url 'article_edit' article.pk %}" class="btn btn-warning">Редактировать</a>
+        <a href="{% url 'article_delete' article.pk %}" class="btn btn-danger">Удалить</a>
+        <a href="{% url 'articles_list' %}" class="btn btn-secondary">Назад к списку</a>
+    </div>
+{% endblock content %}
