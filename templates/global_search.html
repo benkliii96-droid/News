@@ -9,22 +9,19 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label for="q">Поиск по тексту:</label>
-                <input type="text" name="q" id="q" class="form-control" value="{{ query }}"
-                       placeholder="Введите текст...">
+                <input type="text" name="q" id="q" class="form-control" value="{{ query }}" placeholder="Введите текст...">
             </div>
             <div class="col-md-6 mb-3">
                 <label for="post_type">Тип:</label>
                 <select name="post_type" id="post_type" class="form-control">
                     {% for value, label in type_choices %}
-                        <option value="{{ value }}"
-                                {% if selected_type == value %}selected{% endif %}>{{ label }}</option>
+                    <option value="{{ value }}" {% if selected_type == value %}selected{% endif %}>{{ label }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="author">Автор:</label>
-                <input type="text" name="author" id="author" class="form-control" value="{{ author_query }}"
-                       placeholder="Имя автора...">
+                <input type="text" name="author" id="author" class="form-control" value="{{ author_query }}" placeholder="Имя автора...">
             </div>
             <div class="col-md-4 mb-3">
                 <label for="date_from">Дата с:</label>
@@ -53,46 +50,42 @@
             <th>Действия</th>
         </tr>
         {% for result in results %}
-            <tr>
-                <td>
-                    {% if result.post_type == 'NW' %}
-                        <span class="badge bg-primary">Новость</span>
-                    {% else %}
-                        <span class="badge bg-success">Статья</span>
-                    {% endif %}
-                </td>
-                <td>{{ result.title|censor }}</td>
-                <td>{{ result.date|date:'d M Y' }}</td>
-                <td>{{ result.author.user.username }}</td>
-                <td>{{ result.content|censor|truncatechars:50 }}</td>
-                <td>
-                    {% if result.post_type == 'NW' %}
-                        <a href="{% url 'new_detail' result.pk %}" class="btn btn-sm btn-info">Просмотр</a>
-                    {% else %}
-                        <a href="{% url 'article_detail' result.pk %}" class="btn btn-sm btn-info">Просмотр</a>
-                    {% endif %}
-                </td>
-            </tr>
+        <tr>
+            <td>
+                {% if result.post_type == 'NW' %}
+                    <span class="badge bg-primary">Новость</span>
+                {% else %}
+                    <span class="badge bg-success">Статья</span>
+                {% endif %}
+            </td>
+            <td>{{ result.title|censor }}</td>
+            <td>{{ result.date|date:'d M Y' }}</td>
+            <td>{{ result.author.user.username }}</td>
+            <td>{{ result.content|censor|truncatechars:50 }}</td>
+            <td>
+                {% if result.post_type == 'NW' %}
+                    <a href="{% url 'new_detail' result.pk %}" class="btn btn-sm btn-info">Просмотр</a>
+                {% else %}
+                    <a href="{% url 'article_detail' result.pk %}" class="btn btn-sm btn-info">Просмотр</a>
+                {% endif %}
+            </td>
+        </tr>
         {% empty %}
-            <tr>
-                <td colspan="6" class="text-center">Ничего не найдено</td>
-            </tr>
+        <tr>
+            <td colspan="6" class="text-center">Ничего не найдено</td>
+        </tr>
         {% endfor %}
     </table>
 
     {% if page_obj.has_previous %}
         <a href="?{% url_replace page=1 %}">1</a>
-        {% if page_obj.previous_page_number != 1 %}...
-            <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
-        {% endif %}
+        {% if page_obj.previous_page_number != 1 %}...<a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>{% endif %}
     {% endif %}
 
     {{ page_obj.number }}
 
     {% if page_obj.has_next %}
         <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
-        {% if paginator.num_pages != page_obj.next_page_number %}...
-            <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
-        {% endif %}
+        {% if paginator.num_pages != page_obj.next_page_number %}...<a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>{% endif %}
     {% endif %}
 {% endblock content %}

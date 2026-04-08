@@ -1,45 +1,22 @@
 {% extends 'default.html' %}
 {% load custom_filters %}
-
-{% block title %}
-    {% if title %}
-        {{ title }}
-    {% else %}
-        Редактирование поста
-    {% endif %}
-{% endblock title %}
-
+{% block title %}{{ title }}{% endblock title %}
 {% block content %}
-    <h1>
-        {% if title %}
-            {{ title }}
-        {% else %}
-            Редактирование поста
-        {% endif %}
-    </h1>
+    <h1>{{ title }}</h1>
     <hr>
-
     <form method="post">
         {% csrf_token %}
-
         {% for field in form %}
             <div class="form-group">
                 {{ field.label_tag }}
                 {{ field }}
                 {% if field.errors %}
-                    <div class="alert alert-danger">
-                        {{ field.errors }}
-                    </div>
-                {% endif %}
-                {% if field.help_text %}
-                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                    <div class="alert alert-danger">{{ field.errors }}</div>
                 {% endif %}
             </div>
             <br>
         {% endfor %}
-
-        <input type="submit" value="{% if button_text %}{{ button_text }}{% else %}Сохранить{% endif %}"
-               class="btn btn-primary"/>
+        <input type="submit" value="{{ button_text }}" class="btn btn-primary"/>
         <a href="javascript:history.back()" class="btn btn-secondary">Отмена</a>
     </form>
 {% endblock content %}

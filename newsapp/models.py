@@ -1,18 +1,32 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.aggregates import Sum
+from allauth.account.forms import SignupForm
+from django.contrib.auth.models import Group
 
 
 # Create your models here.
 
+class BasicSignupForm(SignupForm):
+
+    def save(self, request):
+        user = super(BasicSignupForm, self).save(request)
+        basic_group = Group.objects.get(name='common')
+        basic_group.user_set.add(user)
+        return user
+
+
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     author_rating = models.SmallIntegerField(default=0)
+
     def update_rating(self):
         post_rating_sum = Post.objects.filter(author=self).aggregate(Sum('postRating'))['postRating__sum'] or 0
-        author_comments_sum = Comment.objects.filter(userComment=self.user).aggregate(Sum('commentRating'))['commentRating__sum'] or 0
+        author_comments_sum = Comment.objects.filter(userComment=self.user).aggregate(Sum('commentRating'))[
+                                  'commentRating__sum'] or 0
         posts_of_author = Post.objects.filter(author=self)
-        comments_to_posts_sum = Comment.objects.filter(post__in=posts_of_author).aggregate(Sum('commentRating'))['commentRating__sum'] or 0
+        comments_to_posts_sum = Comment.objects.filter(post__in=posts_of_author).aggregate(Sum('commentRating'))[
+                                    'commentRating__sum'] or 0
 
         self.author_rating = post_rating_sum * 3 + author_comments_sum + comments_to_posts_sum
         self.save()
@@ -36,7 +50,6 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     postRating = models.SmallIntegerField(default=0)
-
 
     def like(self):
         self.postRating += 1

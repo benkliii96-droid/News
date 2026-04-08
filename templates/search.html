@@ -1,18 +1,18 @@
 {% extends 'default.html' %}
 {% load custom_filters %}
 {% load custom_tags %}
-{% block title %}Поиск статей{% endblock title %}
+{% block title %}Поиск новостей{% endblock title %}
 {% block content %}
-    <h1>Поиск статей</h1>
+    <h1>Поиск новостей</h1>
     <div class="mb-3">
-        <a href="{% url 'articles_list' %}" class="btn btn-secondary">Назад к списку</a>
+        <a href="{% url 'news_list' %}" class="btn btn-secondary">Назад к списку</a>
     </div>
     <form action="" method="get">
         {{ filterset.form.as_p }}
         <input type="submit" value="Поиск" class="btn btn-primary"/>
     </form>
     <hr>
-    <h2>Найдено статей: {{ articles|length }}</h2>
+    <h2>Найдено новостей: {{ news|length }}</h2>
     <table class="table">
         <tr>
             <th>Название</th>
@@ -21,16 +21,16 @@
             <th>Описание</th>
             <th>Действия</th>
         </tr>
-        {% for article in articles %}
+        {% for new in news %}
             <tr>
-                <td>{{ article.title|censor }}</td>
-                <td>{{ article.date|date:'d M Y' }}</td>
-                <td>{{ article.author.user.username }}</td>
-                <td>{{ article.content|censor|truncatechars:50 }}</td>
+                <td>{{ new.title|censor }}</td>
+                <td>{{ new.date|date:'d M Y' }}</td>
+                <td>{{ new.author.user.username }}</td>
+                <td>{{ new.content|censor|truncatechars:50 }}</td>
                 <td>
-                    <a href="{% url 'article_detail' article.pk %}" class="btn btn-sm btn-info">Просмотр</a>
-                    <a href="{% url 'article_edit' article.pk %}" class="btn btn-sm btn-warning">Ред.</a>
-                    <a href="{% url 'article_delete' article.pk %}" class="btn btn-sm btn-danger">Удал.</a>
+                    <a href="{% url 'new_detail' new.pk %}" class="btn btn-sm btn-info">Просмотр</a>
+                    <a href="{% url 'news_edit' new.pk %}" class="btn btn-sm btn-warning">Ред.</a>
+                    <a href="{% url 'news_delete' new.pk %}" class="btn btn-sm btn-danger">Удал.</a>
                 </td>
             </tr>
         {% empty %}

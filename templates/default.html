@@ -28,14 +28,16 @@
                     <a class="nav-link" href="{% url 'articles_list' %}">Статьи</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'global_search' %}">Глобальный поиск</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="/about/">About</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/contacts/">Contact</a>
                 </li>
+                {% if is_not_premium %}
+                    <li>
+                        <button><a href="upgrade/">Стать автором.</a></button>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>

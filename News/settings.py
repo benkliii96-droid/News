@@ -15,21 +15,15 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure--(vmr1ltbl_qg!w(iw66g%zad*g6!bql6g1+=)$rcwvp-xnxem'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,10 +31,24 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.flatpages',
+    'django.contrib.sites',
+
     'django_filters',
     'newsapp',
-    'articles',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.yandex',   # Яндекс провайдер
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -50,18 +58,31 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
+# Настройки allauth (регистрация и вход)
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False          # Имя пользователя не требуется
+ACCOUNT_AUTHENTICATION_METHOD = 'email'    # Вход по email
+ACCOUNT_EMAIL_VERIFICATION = 'optional'    # Можно сделать 'mandatory' для продакшена
+
+# Автоматическая регистрация через социальные сети
+SOCIALACCOUNT_AUTO_SIGNUP = True           # Создавать аккаунт автоматически при первом входе
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True  # Связывать по email с существующими локальными аккаунтами
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True  # Автоматически связывать аккаунты
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 ROOT_URLCONF = 'News.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -70,12 +91,11 @@ TEMPLATES = [
     },
 ]
 
+ACCOUNT_FORMS = {'signup': 'newsapp.models.BasicSignupForm'}
+
 WSGI_APPLICATION = 'News.wsgi.application'
 
-
 # Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -83,10 +103,12 @@ DATABASES = {
     }
 }
 
+# URL для перенаправления
+LOGIN_URL = '/accounts/login/'                # Куда перенаправлять неавторизованных
+LOGIN_REDIRECT_URL = '/'                      # Куда после успешного входа (например, главная)
+LOGOUT_REDIRECT_URL = '/accounts/login/'      # Куда после выхода
 
 # Password validation
-# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -102,23 +124,34 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/6.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.0/howto/static-files/
-
-STATIC_URL = '/static/'  # ВАЖНО: слеш в начале
+# Static files
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',  # путь к твоей папке static
+    BASE_DIR / 'static',
 ]
+
+# Настройки провайдера Яндекс
+SOCIALACCOUNT_PROVIDERS = {
+    'yandex': {
+        'APP': {
+            'client_id': '78bf777f40764df3a9da7ed1570af8f8',
+            'secret': '02ddd2745cbf4d2e99aca85563f9fe0f',
+            'key': ''
+        },
+        'SCOPE': [
+            'login:email',      # доступ к email
+            'login:info',       # доступ к имени, фамилии, полу
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        # Указываем, что email от Яндекса считается подтверждённым
+        'VERIFIED_EMAIL': True,
+    }
+}
